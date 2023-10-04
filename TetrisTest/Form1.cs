@@ -11,7 +11,7 @@ namespace TetrisTest
             map = new Bitmap(800, 800);
             graphics = Graphics.FromImage(map);
             colors[0] = GameArea.BackColor;
-            DrawFigure(0);
+            DrawFigure(1);
 
             test();
 
@@ -117,16 +117,22 @@ namespace TetrisTest
                     DrawCube();
                     break;
                 case 1:
+                    DrawStick();
                     break;
                 case 2:
+                    DrawL();
                     break;
                 case 3:
+                    DrawT();
                     break;
                 case 4:
+                    DrawS();
                     break;
                 case 5:
+                    DrawJ();
                     break;
                 case 6:
+                    DrawZ();
                     break;
 
 
@@ -176,8 +182,105 @@ namespace TetrisTest
             points.Add(new Point(6, 1));
 
             currentFigure.SetPoints(points);
-            currentFigure.classs = 1;
+            currentFigure.classs = 2;
         }
+
+
+        private void DrawStick() 
+        {
+            List <Point> points = new List<Point>();
+            points.Add(new Point(3,0));
+            points.Add(new Point(4, 0));
+            points.Add(new Point(5, 0));
+            points.Add(new Point(6, 0));
+            currentFigure.SetPoints (points);
+            currentFigure.classs = 8;
+
+        }
+
+        private void DrawJ() 
+        {
+            List<Point> points = new List<Point>();
+            points.Add(new Point(5, 0));
+            points.Add(new Point(6, 0));
+            points.Add(new Point(7, 0));
+            points.Add(new Point(7, 1));
+            currentFigure.SetPoints(points);
+            currentFigure.classs=7;
+
+        }
+
+        private void DrawL() 
+        {
+            List<Point> points = new List<Point>();
+            points.Add(new Point(5, 0));
+            points.Add(new Point(6, 0));
+            points.Add(new Point(7, 0));
+            points.Add(new Point(5, 1));
+            currentFigure.SetPoints(points);
+            currentFigure.classs = 3;
+
+        }
+
+
+        private void DrawS() 
+        {
+            List<Point> points = new List<Point>();
+            points.Add(new Point(5, 0));
+            points.Add(new Point(6, 0));
+            points.Add(new Point(5, 1));
+            points.Add(new Point(4, 1));
+            currentFigure.SetPoints(points);
+            currentFigure.classs = 4;
+
+        }
+
+        private void DrawZ() 
+        {
+            List<Point> points = new List<Point>();
+            points.Add(new Point(5, 0));
+            points.Add(new Point(4, 0));
+            points.Add(new Point(5, 1));
+            points.Add(new Point(6, 1));
+            currentFigure.SetPoints(points);
+            currentFigure.classs = 6;
+
+        }
+
+        private void DrawT() 
+        {
+            List<Point> points = new List<Point>();
+            points.Add(new Point(5, 0));
+            points.Add(new Point(6, 0));
+            points.Add(new Point(7, 0));
+            points.Add(new Point(6, 1));
+            currentFigure.SetPoints(points);
+            currentFigure.classs = 7;
+
+        }
+
+        private void FlipFigure() 
+        {
+            var points = currentFigure.GetPoints();
+
+            int x = 0, y = 0; 
+
+            for(int i = 0; i < points.Count; i++) 
+            {
+                Point point = points[i];
+                
+                x = points[0].X  - points[i].Y;
+                y = points[0].Y - points[i].X;
+
+                point.X += x;
+                point.Y += y;
+
+                points[i] = point;
+            }
+            currentFigure.SetPoints(points);
+
+        }
+
 
         private void TetrisForm_Load(object sender, EventArgs e)
         {
@@ -195,7 +298,7 @@ namespace TetrisTest
                     nextVector = 2;
                     break;
                 case Keys.Up:
-                    nextVector = 3;
+                    FlipFigure();
                     break;    
                 case Keys.Down:
                     nextVector = 4;
