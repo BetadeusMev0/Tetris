@@ -29,33 +29,36 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TetrisForm));
-            GameArea = new PictureBox();
-            ((System.ComponentModel.ISupportInitialize)GameArea).BeginInit();
-            SuspendLayout();
+            this.GameArea = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.GameArea)).BeginInit();
+            this.SuspendLayout();
             // 
             // GameArea
             // 
-            GameArea.BorderStyle = BorderStyle.Fixed3D;
-            GameArea.Location = new Point(12, 12);
-            GameArea.Name = "GameArea";
-            GameArea.Size = new Size(205, 405);
-            GameArea.TabIndex = 0;
-            GameArea.TabStop = false;
+            this.GameArea.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.GameArea.Location = new System.Drawing.Point(12, 12);
+            this.GameArea.Name = "GameArea";
+            this.GameArea.Size = new System.Drawing.Size(205, 405);
+            this.GameArea.TabIndex = 0;
+            this.GameArea.TabStop = false;
             // 
             // TetrisForm
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
-            AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(984, 861);
-            Controls.Add(GameArea);
-            Icon = (Icon)resources.GetObject("$this.Icon");
-            MaximumSize = new Size(1000, 900);
-            MinimumSize = new Size(1000, 900);
-            Name = "TetrisForm";
-            Text = "Tetris";
-            KeyUp += TetrisForm_KeyUp;
-            ((System.ComponentModel.ISupportInitialize)GameArea).EndInit();
-            ResumeLayout(false);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(984, 861);
+            this.Controls.Add(this.GameArea);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximumSize = new System.Drawing.Size(1000, 900);
+            this.MinimumSize = new System.Drawing.Size(1000, 900);
+            this.Name = "TetrisForm";
+            this.Text = "Tetris";
+            this.Load += new System.EventHandler(this.TetrisForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TetrisForm_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.TetrisForm_KeyUp_1);
+            ((System.ComponentModel.ISupportInitialize)(this.GameArea)).EndInit();
+            this.ResumeLayout(false);
+
         }
 
         #endregion
