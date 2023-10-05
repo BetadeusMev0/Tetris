@@ -1,11 +1,12 @@
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.ComponentModel;
+using System.DirectoryServices.ActiveDirectory;
 using System.Drawing;
 using System.Drawing.Text;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using TetrisTest;
 
 namespace TetrisTest
@@ -204,11 +205,23 @@ namespace TetrisTest
             var points = currentFigure.GetPoints();
             foreach (Point point in points)
             {
-                if (point.Y == 19 ||  ((pixels[point.X, point.Y + 1] != currentFigure.classs)  && pixels[point.X,point.Y + 1] != 0 ) ) return true;
+                if (point.Y == 19 ||  (CheckPixel(new Point(point.X, point.Y+1))  && pixels[point.X,point.Y + 1] != 0 )) return true;
             }
 
             return false;
         }
+
+
+        private bool CheckPixel(Point pointw) 
+        {
+            var points = currentFigure.GetPoints();
+            foreach(Point point in points) 
+            {
+                if (point == pointw) return false;
+            }
+            return true;
+        }
+
 
 
 
