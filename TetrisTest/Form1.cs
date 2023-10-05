@@ -1,4 +1,12 @@
+using Microsoft.VisualBasic.ApplicationServices;
+using System;
+using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Text;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using TetrisTest;
 
 namespace TetrisTest
 {
@@ -11,23 +19,97 @@ namespace TetrisTest
             map = new Bitmap(800, 800);
             graphics = Graphics.FromImage(map);
             colors[0] = GameArea.BackColor;
-            DrawFigure(1);
+            label1.Text = 1.ToString();
 
-            test();
+
+            DrawFigure(6);
+
+
+            System.Windows.Forms.Timer timer = new()   /*new(tm, 1, 0, 800)*/;
+
+            timer.Tick += new EventHandler(testing);
+            timer.Interval = 500;
+            timer.Start();
 
         }
 
         Figure currentFigure = new Figure();
 
 
-        private void test()
+        bool isFlipped = false;
+
+
+        private void testing(Object myObject, EventArgs myEventArgs)
         {
-            
-            OneStep();
-            DrawFrame();
-            GameArea.Image = map;
+            CheckFull();
+            if (!CheckFloor()) 
+            {
+                nextVector = 4;
+                test();
+                nextVector = 0;
+            }
+            else
+            {
+                Random rnd = new Random();
+                DrawFigure(Convert.ToByte(rnd.Next(0, 8)));
+            }
         }
 
+        private void CheckFull() 
+        {
+            bool[] stage = new bool[10];
+           
+            
+
+            for (int i = 0; i < 20; i++) 
+            {
+                for (int j = 0; j < 10; j++) 
+                {
+                    if(pixels[j,i] != 0) stage[j] = true;
+                }
+                if (CheckFloor(stage)) { RemoveStage(i+1); break; } 
+            }
+        }
+
+        private void RemoveStage(int stage) 
+        {
+            var newPixels = pixels;
+
+            for (int i = 1; i < stage; i++)
+                for (int j = 0; j < 10; j++) 
+                {
+                    if (j > 0)newPixels[j,i] = pixels[j,i-1];
+                }
+            pixels = newPixels;
+
+        }
+
+
+        private bool CheckFloor(bool[] bools) 
+        {
+            foreach (bool bl in bools) 
+            {
+                if (!bl) return false;
+            }
+            return true;
+        }
+
+
+        private void test()
+        {
+            if (isFall)
+            {
+                isFall = false;
+                OneStep();
+                DrawFrame();
+                GameArea.Image = map;
+                isFall = true;
+            }
+            
+        }
+
+
+        private bool isFall = true;
 
         private class Figure
         {
@@ -37,18 +119,20 @@ namespace TetrisTest
 
             List<Point> pixels = new List<Point>();
 
-            public List<Point> GetPoints() { return this.pixels;}
+            public byte rotation;
+
+            public List<Point> GetPoints() { return this.pixels; }
 
             public void SetPoints(List<Point> points) { this.pixels = points; }
         }
-        
+
 
         private byte[,] pixels = new byte[10, 20];
 
 
 
 
-        private Color[] colors = new Color[9] {Color.White ,Color.Black, Color.Yellow, Color.Orange, Color.Red, Color.Green, Color.Blue, Color.Violet, Color.CadetBlue };
+        private Color[] colors = new Color[9] { Color.White, Color.Black, Color.Yellow, Color.Orange, Color.Red, Color.Green, Color.Blue, Color.Violet, Color.CadetBlue };
 
 
         Bitmap map = new Bitmap(10, 10);
@@ -68,18 +152,24 @@ namespace TetrisTest
         }
 
 
-        private void OneStep() 
+        private void OneStep()
         {
             var prevPosition = this.prevPosition.GetPoints();
             int x = 0;
             int y = 0;
-            for (int i = 0; i < prevPosition.Count; i++) 
+
+         
+            
+
+            for (int i = 0; i < prevPosition.Count; i++)
             {
                 x = prevPosition[i].X;
                 y = prevPosition[i].Y;
                 pixels[x, y] = 0;
             }
-            ChangeFigurePositon();
+            if (isFlipped) FlipFigure();
+            else if(CheckMove()) ChangeFigurePositon();
+            
             var curentPosition = this.currentFigure.GetPoints();
             for (int i = 0; i < curentPosition.Count; i++)
             {
@@ -88,16 +178,17 @@ namespace TetrisTest
                 pixels[x, y] = currentFigure.classs;
             }
             this.prevPosition = currentFigure;
+            
         }
 
 
-        private void ChangeFigurePositon() 
+        private void ChangeFigurePositon()
         {
             var currentposition = currentFigure.GetPoints();
-            for (int i = 0;i < currentFigure.GetPoints().Count; i++) 
+            for (int i = 0; i < currentFigure.GetPoints().Count; i++)
             {
                 Point point = currentposition[i];
-                
+
                 if (nextVector == 1) point.X--;
                 if (nextVector == 2) point.X++;
                 if (nextVector == 3) point.Y--;
@@ -107,6 +198,34 @@ namespace TetrisTest
             }
             currentFigure.SetPoints(currentposition);
         }
+
+        private bool CheckFloor() 
+        {
+            var points = currentFigure.GetPoints();
+            foreach (Point point in points)
+            {
+                if (point.Y == 19 ||  ((pixels[point.X, point.Y + 1] != currentFigure.classs)  && pixels[point.X,point.Y + 1] != 0 ) ) return true;
+            }
+
+            return false;
+        }
+
+
+
+        private bool CheckMove() 
+        {
+            var points = currentFigure.GetPoints();
+            foreach (Point point in points) 
+            {
+                if (nextVector == 1 && point.X <= 0) return false;
+                if (nextVector == 2 && point.X >= 9) return false;
+                if (nextVector == 4 && point.Y >= 19) return false;
+            }
+
+            return true;
+        }
+
+
 
 
         private void DrawFigure(byte figure)
@@ -123,16 +242,19 @@ namespace TetrisTest
                     DrawL();
                     break;
                 case 3:
-                    DrawT();
-                    break;
-                case 4:
                     DrawS();
                     break;
+                case 4:
+                    DrawT();
+
+                    break;
                 case 5:
-                    DrawJ();
+                    DrawZ();
+
                     break;
                 case 6:
-                    DrawZ();
+
+                    DrawJ();
                     break;
 
 
@@ -143,6 +265,10 @@ namespace TetrisTest
         {
             Rectangle rectangle = new Rectangle(point, sizeStndr);
             Size size = sizeStndr;
+            size.Width--;
+            size.Height--;
+            rectangle = new Rectangle(point, size);
+            graphics.DrawRectangle(new Pen(Color.Black), rectangle);
             for (int i = 0; size.Width > 0; i++)
             {
                 size.Width--;
@@ -158,47 +284,45 @@ namespace TetrisTest
         }
 
 
-        private void DrawFrame() 
+        private void DrawFrame()
         {
             for (int i = 0; i < 10; i++)
-                for (int j = 0; j < 20; j++) 
+                for (int j = 0; j < 20; j++)
                 {
-                    
-                    
-                        DrawPixel(GetPoint(i, j), colors[pixels[i,j]]);
-                    
-                    
+
+
+                    DrawPixel(GetPoint(i, j), colors[pixels[i, j]]);
+
+
                 }
-            
+
         }
 
-        private void DrawCube() 
+        private void DrawCube()
         {
             List<Point> points = new List<Point>();
 
-            points.Add (new Point(5, 0));
-            points.Add(  new Point(5, 1));
-            points.Add ( new Point(6, 0));
+            points.Add(new Point(5, 0));
+            points.Add(new Point(5, 1));
+            points.Add(new Point(6, 0));
             points.Add(new Point(6, 1));
-
             currentFigure.SetPoints(points);
             currentFigure.classs = 2;
         }
 
 
-        private void DrawStick() 
+        private void DrawStick()
         {
-            List <Point> points = new List<Point>();
-            points.Add(new Point(3,0));
+            List<Point> points = new List<Point>();
+            points.Add(new Point(3, 0));
             points.Add(new Point(4, 0));
             points.Add(new Point(5, 0));
             points.Add(new Point(6, 0));
-            currentFigure.SetPoints (points);
+            currentFigure.SetPoints(points);
             currentFigure.classs = 8;
-
         }
 
-        private void DrawJ() 
+        private void DrawJ()
         {
             List<Point> points = new List<Point>();
             points.Add(new Point(5, 0));
@@ -206,11 +330,10 @@ namespace TetrisTest
             points.Add(new Point(7, 0));
             points.Add(new Point(7, 1));
             currentFigure.SetPoints(points);
-            currentFigure.classs=7;
-
+            currentFigure.classs = 7;
         }
 
-        private void DrawL() 
+        private void DrawL()
         {
             List<Point> points = new List<Point>();
             points.Add(new Point(5, 0));
@@ -219,11 +342,10 @@ namespace TetrisTest
             points.Add(new Point(5, 1));
             currentFigure.SetPoints(points);
             currentFigure.classs = 3;
-
         }
 
 
-        private void DrawS() 
+        private void DrawS()
         {
             List<Point> points = new List<Point>();
             points.Add(new Point(5, 0));
@@ -232,10 +354,9 @@ namespace TetrisTest
             points.Add(new Point(4, 1));
             currentFigure.SetPoints(points);
             currentFigure.classs = 4;
-
         }
 
-        private void DrawZ() 
+        private void DrawZ()
         {
             List<Point> points = new List<Point>();
             points.Add(new Point(5, 0));
@@ -244,10 +365,9 @@ namespace TetrisTest
             points.Add(new Point(6, 1));
             currentFigure.SetPoints(points);
             currentFigure.classs = 6;
-
         }
 
-        private void DrawT() 
+        private void DrawT()
         {
             List<Point> points = new List<Point>();
             points.Add(new Point(5, 0));
@@ -255,31 +375,256 @@ namespace TetrisTest
             points.Add(new Point(7, 0));
             points.Add(new Point(6, 1));
             currentFigure.SetPoints(points);
-            currentFigure.classs = 7;
+            currentFigure.classs = 5;
+        }
+
+        private void FlipFigure()
+        {
+            isFlipped = false;
+            currentFigure.rotation++;
+            if (currentFigure.rotation > 3) currentFigure.rotation = 0;
+
+            if (currentFigure.classs == 8)
+            {
+                var points = currentFigure.GetPoints();
+
+                int x = 0, y = 0;
+
+                for (int i = 0; i < points.Count; i++)
+                {
+                    Point point = points[i];
+
+                    x = points[0].X;
+                    y = points[0].Y;
+
+                    x -= point.X;
+                    y -= point.Y;
+
+                    point = points[0];
+                    point.X -= y;
+                    point.Y -= x;
+
+                    points[i] = point;
+                }
+                currentFigure.SetPoints(points);
+            }
+            else switch (currentFigure.classs)
+                {
+                    case 3:
+                        FlipL();
+                        break;
+                    case 4:
+                        FlipS();
+                        break;
+                    case 5:
+                        FlipT();
+                        break;
+                    case 6:
+                        FlipZ();
+                        break;
+                    case 7:
+                        FlipJ();
+                        break;
+                }
+
+
 
         }
 
-        private void FlipFigure() 
+
+        private void FlipJ() 
         {
             var points = currentFigure.GetPoints();
-
-            int x = 0, y = 0; 
-
-            for(int i = 0; i < points.Count; i++) 
+            Point point = points[0];
+            switch (currentFigure.rotation) 
             {
-                Point point = points[i];
-                
-                x = points[0].X  - points[i].Y;
-                y = points[0].Y - points[i].X;
+                case 0:
+                    points[1] = new(point.X-1, point.Y);
+                    points[2] = new(point.X+1, point.Y);
+                    points[3] = new(point.X+1, point.Y+1);
+                    break;
+                case 1:
+                    points[1] = new(point.X, point.Y-1);
+                    points[2] = new(point.X, point.Y + 1);
+                    points[3] = new(point.X - 1, point.Y + 1);
+                    break;
+                case 2:
+                    points[1] = new(point.X - 1, point.Y);
+                    points[2] = new(point.X + 1, point.Y);
+                    points[3] = new(point.X-1, point.Y - 1);
+                    break;
+                case 3:
+                    points[1] = new(point.X, point.Y-1);
+                    points[2] = new(point.X + 1, point.Y-1);
+                    points[3] = new(point.X, point.Y+1);
+                    break;
 
-                point.X += x;
-                point.Y += y;
 
-                points[i] = point;
+
+            }
+
+
+            currentFigure.SetPoints(points);
+        }
+
+
+
+
+            private void FlipZ() 
+        {
+            var points = currentFigure.GetPoints();
+            Point point = points[0];
+            switch (currentFigure.rotation%2) 
+            {
+                case 0:
+                    points[1] = new(point.X-1,point.Y);
+                    points[2] = new(point.X, point.Y+1);
+                    points[3] = new(point.X+1, point.Y+1);
+                    break;
+                case 1:
+                    points[1] = new(point.X , point.Y-1);
+                    points[2] = new(point.X+1, point.Y);
+                    points[3] = new(point.X+1 , point.Y + 1 );
+                    break;
+
+            }
+            currentFigure.SetPoints(points);
+        }
+
+
+
+        private void FlipT()
+        {
+            var points = currentFigure.GetPoints();
+            Point point = points[0];
+            switch (currentFigure.rotation)
+            {
+                case 0:
+                    points[1] = new Point(point.X-1,point.Y);
+                    points[2] = new(point.X+1,point.Y);
+                    points[3] = new(point.X, point.Y-1);
+                    break;
+                case 1:
+                    points[1] = new Point(point.X, point.Y-1);
+                    points[2] = new(point.X, point.Y+1);
+                    points[3] = new(point.X+1, point.Y);
+                    break;
+                case 2:
+                    points[1] = new Point(point.X - 1, point.Y);
+                    points[2] = new(point.X + 1, point.Y);
+                    points[3] = new(point.X, point.Y + 1);
+                    break;
+                case 3:
+                    points[1] = new Point(point.X, point.Y+1);
+                    points[2] = new(point.X, point.Y-1);
+                    points[3] = new(point.X-1, point.Y);
+                    break;
             }
             currentFigure.SetPoints(points);
 
         }
+
+
+
+
+
+
+        private void FlipS()
+        {
+
+            var points = currentFigure.GetPoints();
+            Point point = points[0];
+           
+            switch (currentFigure.rotation)
+            {
+                case 0:
+                    points[1] = new Point(point.X + 1, point.Y);
+                    points[2] = new Point(point.X, point.Y + 1);
+                    points[3] = new Point(point.X - 1, point.Y + 1);
+                    currentFigure.SetPoints(points);
+                    break;
+                
+                case 1:
+                    points[1] = new Point(point.X, point.Y - 1);
+                    points[2] = new Point(point.X + 1, point.Y);
+                    points[3] = new Point(point.X + 1, point.Y + 1);
+                    currentFigure.SetPoints(points);
+
+                    break;
+                case 2:
+                    points[1] = new Point(point.X + 1, point.Y);
+                    points[2] = new Point(point.X, point.Y + 1);
+                    points[3] = new Point(point.X - 1, point.Y + 1);
+                    currentFigure.SetPoints(points); break;
+                case 3:
+                    points[1] = new Point(point.X, point.Y - 1);
+                    points[2] = new Point(point.X + 1, point.Y);
+                    points[3] = new Point(point.X + 1, point.Y + 1);
+                    currentFigure.SetPoints(points);
+
+                    break;
+                    
+            }
+        }
+
+        private void FlipL()
+        {
+            var points = currentFigure.GetPoints();
+            Point point = points[0];
+            var tmp = point;
+            switch (currentFigure.rotation)
+            {
+                case 0:
+                    for (int i = 1; i < 3; i++)
+                    {
+                        tmp.X++;
+                        points[i] = tmp;
+                    }
+                    point.Y++;
+                    points[3] = point;
+                    currentFigure.SetPoints(points);
+
+
+                    break;
+
+                case 1:
+                    for (int i = 1; i < 3; i++)
+                    {
+                        tmp.Y++;
+                        points[i] = tmp;
+                    }
+                    tmp.X++;
+                    points[3] = tmp;
+                    currentFigure.SetPoints(points);
+                    break;
+                case 2:
+                    for (int i = 1; i < 3; i++)
+                    {
+                        tmp.X++;
+                        points[i] = tmp;
+                    }
+                    tmp.Y--;
+                    points[3] = tmp;
+                    currentFigure.SetPoints(points);
+                    break;
+
+                case 3:
+                    for (int i = 1; i < 3; i++)
+                    {
+                        tmp.Y++;
+                        points[i] = tmp;
+                    }
+                    point.X--;
+                    points[3] = point;
+                    currentFigure.SetPoints(points);
+                    break;
+            }
+
+
+
+
+        }
+
 
 
         private void TetrisForm_Load(object sender, EventArgs e)
@@ -289,7 +634,7 @@ namespace TetrisTest
 
         private void TetrisForm_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode) 
+            switch (e.KeyCode)
             {
                 case Keys.Left:
                     nextVector = 1;
@@ -298,8 +643,8 @@ namespace TetrisTest
                     nextVector = 2;
                     break;
                 case Keys.Up:
-                    FlipFigure();
-                    break;    
+                    isFlipped = true;
+                    break;
                 case Keys.Down:
                     nextVector = 4;
                     break;
@@ -309,39 +654,28 @@ namespace TetrisTest
         private void TetrisForm_KeyUp_1(object sender, KeyEventArgs e)
         {
             test();
+            nextVector = 0;
         }
 
 
-        //private void DrawFigureZero()
-        //{
+        private void PrintOnLabel(Figure figure, Label label)
+        {
+            label.Text = string.Empty;
 
-        //}
+            var gf = figure.GetPoints();
 
-        //private void DrawFigurePalka(int x, int y, byte orientation)
-        //{
-        //    Point point = GetPoint(x, y);
-        //    for (int i = 0; i < 4; i++)
-        //    {
-        //        if (orientation == 1) point = GetPoint((int)x, (int)y++);
-        //        else point = GetPoint(x++, y);
-        //        DrawPixel(point, Color.CadetBlue);
-        //    }
-        //}
-
-        //private void DrawFigureCube(int x, int y)
-        //{
-        //    Point point = GetPoint(x, y);
-        //    DrawPixel(point, Color.Yellow);
-        //    point.X += 10;
-        //    DrawPixel(point, Color.Yellow);
-        //    point.Y += 10;
-        //    DrawPixel(point, Color.Yellow);
-        //    point.X -= 10;
-        //    DrawPixel(point, Color.Yellow);
-
-        //}
+            foreach (Point point in gf)
+            {
+                label.Text += " ";
+                label.Text += point;
+            }
 
 
+        }
+
+
+
+      
 
     }
 }

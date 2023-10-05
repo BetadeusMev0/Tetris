@@ -31,3 +31,20 @@ C:\Users\User\source\repos\Tetris\TetrisTest\obj\Debug\net6.0-windows\refint\Tet
 C:\Users\User\source\repos\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.pdb
 C:\Users\User\source\repos\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.genruntimeconfig.cache
 C:\Users\User\source\repos\Tetris\TetrisTest\obj\Debug\net6.0-windows\ref\TetrisTest.dll
+E:\VS PROJECT\Tetris\TetrisTest\bin\Debug\net6.0-windows\TetrisTest.exe
+E:\VS PROJECT\Tetris\TetrisTest\bin\Debug\net6.0-windows\TetrisTest.deps.json
+E:\VS PROJECT\Tetris\TetrisTest\bin\Debug\net6.0-windows\TetrisTest.runtimeconfig.json
+E:\VS PROJECT\Tetris\TetrisTest\bin\Debug\net6.0-windows\TetrisTest.dll
+E:\VS PROJECT\Tetris\TetrisTest\bin\Debug\net6.0-windows\TetrisTest.pdb
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.csproj.AssemblyReference.cache
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.TetrisForm.resources
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.csproj.GenerateResource.cache
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.GeneratedMSBuildEditorConfig.editorconfig
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.AssemblyInfoInputs.cache
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.AssemblyInfo.cs
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.csproj.CoreCompileInputs.cache
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.dll
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\refint\TetrisTest.dll
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.pdb
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\TetrisTest.genruntimeconfig.cache
+E:\VS PROJECT\Tetris\TetrisTest\obj\Debug\net6.0-windows\ref\TetrisTest.dll
