@@ -42,7 +42,7 @@ namespace TetrisTest
 
         private void testing(Object myObject, EventArgs myEventArgs)
         {
-            CheckFull();
+            
             if (!CheckFloor()) 
             {
                 nextVector = 4;
@@ -51,6 +51,7 @@ namespace TetrisTest
             }
             else
             {
+                CheckFull();
                 Random rnd = new Random();
                 DrawFigure(Convert.ToByte(rnd.Next(0, 8)));
             }
@@ -62,13 +63,14 @@ namespace TetrisTest
            
             
 
-            for (int i = 0; i < 20; i++) 
+            for (int i = 19; i >= 0; i--) 
             {
                 for (int j = 0; j < 10; j++) 
                 {
                     if(pixels[j,i] != 0) stage[j] = true;
                 }
-                if (CheckFloor(stage)) { RemoveStage(i+1); break; } 
+                if (CheckStage(stage)) { RemoveStage(i+1); break; }
+                stage = new bool[10];
             }
         }
 
@@ -76,17 +78,17 @@ namespace TetrisTest
         {
             var newPixels = pixels;
 
-            for (int i = 1; i < stage; i++)
+            for (int i = 0; i < stage; i++)
                 for (int j = 0; j < 10; j++) 
                 {
-                    if (j > 0)newPixels[j,i] = pixels[j,i-1];
+                    if (j > 0 && i > 0)newPixels[j,i] = pixels[j,i-1];
                 }
             pixels = newPixels;
 
         }
 
 
-        private bool CheckFloor(bool[] bools) 
+        private bool CheckStage(bool[] bools) 
         {
             foreach (bool bl in bools) 
             {
