@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TetrisForm));
             GameArea = new PictureBox();
             label1 = new Label();
-            label2 = new Label();
+            labelScore = new Label();
             ((System.ComponentModel.ISupportInitialize)GameArea).BeginInit();
             SuspendLayout();
             // 
@@ -47,32 +47,31 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(518, 26);
+            label1.Location = new Point(234, 12);
             label1.Name = "label1";
-            label1.Size = new Size(38, 15);
+            label1.Size = new Size(39, 15);
             label1.TabIndex = 1;
-            label1.Text = "label1";
+            label1.Text = "Score:";
             // 
-            // label2
+            // labelScore
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(518, 79);
-            label2.Name = "label2";
-            label2.Size = new Size(38, 15);
-            label2.TabIndex = 2;
-            label2.Text = "label2";
+            labelScore.AutoSize = true;
+            labelScore.Location = new Point(279, 12);
+            labelScore.Name = "labelScore";
+            labelScore.Size = new Size(0, 15);
+            labelScore.TabIndex = 2;
             // 
             // TetrisForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(984, 861);
-            Controls.Add(label2);
+            ClientSize = new Size(384, 431);
+            Controls.Add(labelScore);
             Controls.Add(label1);
             Controls.Add(GameArea);
             Icon = (Icon)resources.GetObject("$this.Icon");
-            MaximumSize = new Size(1000, 900);
-            MinimumSize = new Size(1000, 900);
+            MaximumSize = new Size(400, 470);
+            MinimumSize = new Size(400, 470);
             Name = "TetrisForm";
             Text = "Tetris";
             Load += TetrisForm_Load;
@@ -87,6 +86,6 @@
 
         private PictureBox GameArea;
         private Label label1;
-        private Label label2;
+        private Label labelScore;
     }
 }

@@ -20,8 +20,7 @@ namespace TetrisTest
             map = new Bitmap(800, 800);
             graphics = Graphics.FromImage(map);
             colors[0] = GameArea.BackColor;
-            label1.Text = 1.ToString();
-
+            labelScore.Text = "0";
 
             DrawFigure(6);
 
@@ -42,8 +41,8 @@ namespace TetrisTest
 
         private void testing(Object myObject, EventArgs myEventArgs)
         {
-            
-            if (!CheckFloor()) 
+
+            if (!CheckFloor())
             {
                 nextVector = 4;
                 test();
@@ -57,40 +56,40 @@ namespace TetrisTest
             }
         }
 
-        private void CheckFull() 
+        private void CheckFull()
         {
             bool[] stage = new bool[10];
-           
-            
 
-            for (int i = 19; i >= 0; i--) 
+
+
+            for (int i = 19; i >= 0; i--)
             {
-                for (int j = 0; j < 10; j++) 
+                for (int j = 0; j < 10; j++)
                 {
-                    if(pixels[j,i] != 0) stage[j] = true;
+                    if (pixels[j, i] != 0) stage[j] = true;
                 }
-                if (CheckStage(stage)) { RemoveStage(i+1); break; }
+                if (CheckStage(stage)) { RemoveStage(i + 1); break; }
                 stage = new bool[10];
             }
         }
 
-        private void RemoveStage(int stage) 
+        private void RemoveStage(int stage)
         {
             var newPixels = pixels;
 
             for (int i = 0; i < stage; i++)
-                for (int j = 0; j < 10; j++) 
+                for (int j = 0; j < 10; j++)
                 {
-                    if (j > 0 && i > 0)newPixels[j,i] = pixels[j,i-1];
+                    if (j > 0 && i > 0) newPixels[j, i] = pixels[j, i - 1];
                 }
             pixels = newPixels;
-
+            labelScore.Text =  (int.Parse(labelScore.Text) + 100).ToString();
         }
 
 
-        private bool CheckStage(bool[] bools) 
+        private bool CheckStage(bool[] bools)
         {
-            foreach (bool bl in bools) 
+            foreach (bool bl in bools)
             {
                 if (!bl) return false;
             }
@@ -108,7 +107,7 @@ namespace TetrisTest
                 GameArea.Image = map;
                 isFall = true;
             }
-            
+
         }
 
 
@@ -161,8 +160,8 @@ namespace TetrisTest
             int x = 0;
             int y = 0;
 
-         
-            
+
+
 
             for (int i = 0; i < prevPosition.Count; i++)
             {
@@ -171,8 +170,8 @@ namespace TetrisTest
                 pixels[x, y] = 0;
             }
             if (isFlipped) FlipFigure();
-            else if(CheckMove()) ChangeFigurePositon();
-            
+            else if (CheckMove()) ChangeFigurePositon();
+
             var curentPosition = this.currentFigure.GetPoints();
             for (int i = 0; i < curentPosition.Count; i++)
             {
@@ -181,7 +180,7 @@ namespace TetrisTest
                 pixels[x, y] = currentFigure.classs;
             }
             this.prevPosition = currentFigure;
-            
+
         }
 
 
@@ -202,22 +201,22 @@ namespace TetrisTest
             currentFigure.SetPoints(currentposition);
         }
 
-        private bool CheckFloor() 
+        private bool CheckFloor()
         {
             var points = currentFigure.GetPoints();
             foreach (Point point in points)
             {
-                if (point.Y == 19 ||  (CheckPixel(new Point(point.X, point.Y+1))  && pixels[point.X,point.Y + 1] != 0 )) return true;
+                if (point.Y == 19 || (CheckPixel(new Point(point.X, point.Y + 1)) && pixels[point.X, point.Y + 1] != 0)) return true;
             }
 
             return false;
         }
 
 
-        private bool CheckPixel(Point pointw) 
+        private bool CheckPixel(Point pointw)
         {
             var points = currentFigure.GetPoints();
-            foreach(Point point in points) 
+            foreach (Point point in points)
             {
                 if (point == pointw) return false;
             }
@@ -227,10 +226,10 @@ namespace TetrisTest
 
 
 
-        private bool CheckMove() 
+        private bool CheckMove()
         {
             var points = currentFigure.GetPoints();
-            foreach (Point point in points) 
+            foreach (Point point in points)
             {
                 if (nextVector == 1 && point.X <= 0) return false;
                 if (nextVector == 2 && point.X >= 9) return false;
@@ -447,31 +446,31 @@ namespace TetrisTest
         }
 
 
-        private void FlipJ() 
+        private void FlipJ()
         {
             var points = currentFigure.GetPoints();
             Point point = points[0];
-            switch (currentFigure.rotation) 
+            switch (currentFigure.rotation)
             {
                 case 0:
-                    points[1] = new(point.X-1, point.Y);
-                    points[2] = new(point.X+1, point.Y);
-                    points[3] = new(point.X+1, point.Y+1);
+                    points[1] = new(point.X - 1, point.Y);
+                    points[2] = new(point.X + 1, point.Y);
+                    points[3] = new(point.X + 1, point.Y + 1);
                     break;
                 case 1:
-                    points[1] = new(point.X, point.Y-1);
+                    points[1] = new(point.X, point.Y - 1);
                     points[2] = new(point.X, point.Y + 1);
                     points[3] = new(point.X - 1, point.Y + 1);
                     break;
                 case 2:
                     points[1] = new(point.X - 1, point.Y);
                     points[2] = new(point.X + 1, point.Y);
-                    points[3] = new(point.X-1, point.Y - 1);
+                    points[3] = new(point.X - 1, point.Y - 1);
                     break;
                 case 3:
-                    points[1] = new(point.X, point.Y-1);
-                    points[2] = new(point.X + 1, point.Y-1);
-                    points[3] = new(point.X, point.Y+1);
+                    points[1] = new(point.X, point.Y - 1);
+                    points[2] = new(point.X + 1, point.Y - 1);
+                    points[3] = new(point.X, point.Y + 1);
                     break;
 
 
@@ -485,21 +484,21 @@ namespace TetrisTest
 
 
 
-            private void FlipZ() 
+        private void FlipZ()
         {
             var points = currentFigure.GetPoints();
             Point point = points[0];
-            switch (currentFigure.rotation%2) 
+            switch (currentFigure.rotation % 2)
             {
                 case 0:
-                    points[1] = new(point.X-1,point.Y);
-                    points[2] = new(point.X, point.Y+1);
-                    points[3] = new(point.X+1, point.Y+1);
+                    points[1] = new(point.X - 1, point.Y);
+                    points[2] = new(point.X, point.Y + 1);
+                    points[3] = new(point.X + 1, point.Y + 1);
                     break;
                 case 1:
-                    points[1] = new(point.X , point.Y-1);
-                    points[2] = new(point.X+1, point.Y);
-                    points[3] = new(point.X+1 , point.Y + 1 );
+                    points[1] = new(point.X, point.Y - 1);
+                    points[2] = new(point.X + 1, point.Y);
+                    points[3] = new(point.X + 1, point.Y + 1);
                     break;
 
             }
@@ -515,14 +514,14 @@ namespace TetrisTest
             switch (currentFigure.rotation)
             {
                 case 0:
-                    points[1] = new Point(point.X-1,point.Y);
-                    points[2] = new(point.X+1,point.Y);
-                    points[3] = new(point.X, point.Y-1);
+                    points[1] = new Point(point.X - 1, point.Y);
+                    points[2] = new(point.X + 1, point.Y);
+                    points[3] = new(point.X, point.Y - 1);
                     break;
                 case 1:
-                    points[1] = new Point(point.X, point.Y-1);
-                    points[2] = new(point.X, point.Y+1);
-                    points[3] = new(point.X+1, point.Y);
+                    points[1] = new Point(point.X, point.Y - 1);
+                    points[2] = new(point.X, point.Y + 1);
+                    points[3] = new(point.X + 1, point.Y);
                     break;
                 case 2:
                     points[1] = new Point(point.X - 1, point.Y);
@@ -530,9 +529,9 @@ namespace TetrisTest
                     points[3] = new(point.X, point.Y + 1);
                     break;
                 case 3:
-                    points[1] = new Point(point.X, point.Y+1);
-                    points[2] = new(point.X, point.Y-1);
-                    points[3] = new(point.X-1, point.Y);
+                    points[1] = new Point(point.X, point.Y + 1);
+                    points[2] = new(point.X, point.Y - 1);
+                    points[3] = new(point.X - 1, point.Y);
                     break;
             }
             currentFigure.SetPoints(points);
@@ -549,7 +548,7 @@ namespace TetrisTest
 
             var points = currentFigure.GetPoints();
             Point point = points[0];
-           
+
             switch (currentFigure.rotation)
             {
                 case 0:
@@ -558,7 +557,7 @@ namespace TetrisTest
                     points[3] = new Point(point.X - 1, point.Y + 1);
                     currentFigure.SetPoints(points);
                     break;
-                
+
                 case 1:
                     points[1] = new Point(point.X, point.Y - 1);
                     points[2] = new Point(point.X + 1, point.Y);
@@ -578,7 +577,7 @@ namespace TetrisTest
                     currentFigure.SetPoints(points);
 
                     break;
-                    
+
             }
         }
 
@@ -690,7 +689,7 @@ namespace TetrisTest
 
 
 
-      
+
 
     }
 }
