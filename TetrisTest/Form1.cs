@@ -22,16 +22,25 @@ namespace TetrisTest
             colors[0] = GameArea.BackColor;
             labelScore.Text = "0";
 
-            DrawFigure(6);
+            gameStatus.Text = "Game Begin";
+
+            Random rnd = new Random();
 
 
-            System.Windows.Forms.Timer timer = new()   /*new(tm, 1, 0, 800)*/;
+
+            DrawFigure((byte)rnd.Next(0,8));
+
+
+            
 
             timer.Tick += new EventHandler(testing);
             timer.Interval = 500;
             timer.Start();
 
         }
+
+        System.Windows.Forms.Timer timer = new();
+
 
         Figure currentFigure = new Figure();
 
@@ -50,10 +59,29 @@ namespace TetrisTest
             }
             else
             {
+                if (CheckGameOver()) { timer.Stop(); gameStatus.Text = "Game Over!"; }
                 CheckFull();
                 Random rnd = new Random();
                 DrawFigure(Convert.ToByte(rnd.Next(0, 8)));
             }
+        }
+
+        private bool CheckGameOver() 
+        {
+            int ii = 0;
+            int j = 0;
+            for (int i = 0; i < 20; i++) 
+            {
+                if (i <= 9) ii = i;
+                else { ii = i - 10; j = 1;}
+
+                if (pixels[ii, j] != 0) return true;
+
+            }
+
+
+
+            return false;
         }
 
         private void CheckFull()
@@ -68,7 +96,7 @@ namespace TetrisTest
                 {
                     if (pixels[j, i] != 0) stage[j] = true;
                 }
-                if (CheckStage(stage)) { RemoveStage(i + 1); break; }
+                if (CheckStage(stage)) { RemoveStage(i); break; }
                 stage = new bool[10];
             }
         }
@@ -76,14 +104,13 @@ namespace TetrisTest
         private void RemoveStage(int stage)
         {
             var newPixels = pixels;
-
-            for (int i = 0; i < stage; i++)
+            for (int i = stage; i > 0; i--)
                 for (int j = 0; j < 10; j++)
                 {
-                    if (j > 0 && i > 0) newPixels[j, i] = pixels[j, i - 1];
+                    if (i+1 < 19 && i-1 > 0)newPixels[j,i] = pixels[j, i-1];
                 }
             pixels = newPixels;
-            labelScore.Text =  (int.Parse(labelScore.Text) + 100).ToString();
+            labelScore.Text = (int.Parse(labelScore.Text) + 100).ToString();
         }
 
 
@@ -402,25 +429,24 @@ namespace TetrisTest
             if (currentFigure.classs == 8)
             {
                 var points = currentFigure.GetPoints();
-
-                int x = 0, y = 0;
-
-                for (int i = 0; i < points.Count; i++)
+                var point = points[0];
+                switch (currentFigure.rotation % 2)
                 {
-                    Point point = points[i];
+                    case 0:
+                        points[1] = new(point.X - 1, point.Y);
+                        points[2] = new(point.X+1, point.Y);
+                        points[3] = new(point.X + 2, point.Y);
+                        break;
+                    case 1:
+                        points[1] = new(point.X, point.Y - 1);
+                        points[2] = new(point.X, point.Y+1);
+                        points[3] = new(point.X, point.Y + 2);
+                        break;
 
-                    x = points[0].X;
-                    y = points[0].Y;
-
-                    x -= point.X;
-                    y -= point.Y;
-
-                    point = points[0];
-                    point.X -= y;
-                    point.Y -= x;
-
-                    points[i] = point;
                 }
+
+
+
                 currentFigure.SetPoints(points);
             }
             else switch (currentFigure.classs)
@@ -441,9 +467,28 @@ namespace TetrisTest
                         FlipJ();
                         break;
                 }
+            if (CheckFlipped()) 
+            {
+                currentFigure.rotation--;
+                currentFigure.rotation--;
+                FlipFigure(); 
+            }
 
 
+        }
 
+        private bool CheckFlipped() 
+        {
+            int x = 0, y = 0;
+            foreach (Point point in currentFigure.GetPoints()) 
+            {
+                x = point.X; y = point.Y;
+                if (x > 9 || x < 0) return true;
+                if (y > 19 || y < 0) return true;
+            }
+
+
+            return false;
         }
 
 
@@ -665,6 +710,12 @@ namespace TetrisTest
                     break;
             }
         }
+
+
+        
+
+
+
 
         private void TetrisForm_KeyUp_1(object sender, KeyEventArgs e)
         {

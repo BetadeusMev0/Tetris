@@ -32,6 +32,8 @@
             GameArea = new PictureBox();
             label1 = new Label();
             labelScore = new Label();
+            label2 = new Label();
+            gameStatus = new Label();
             ((System.ComponentModel.ISupportInitialize)GameArea).BeginInit();
             SuspendLayout();
             // 
@@ -61,11 +63,30 @@
             labelScore.Size = new Size(0, 15);
             labelScore.TabIndex = 2;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(234, 52);
+            label2.Name = "label2";
+            label2.Size = new Size(75, 15);
+            label2.TabIndex = 3;
+            label2.Text = "Game status:";
+            // 
+            // gameStatus
+            // 
+            gameStatus.AutoSize = true;
+            gameStatus.Location = new Point(241, 79);
+            gameStatus.Name = "gameStatus";
+            gameStatus.Size = new Size(0, 15);
+            gameStatus.TabIndex = 4;
+            // 
             // TetrisForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(384, 431);
+            Controls.Add(gameStatus);
+            Controls.Add(label2);
             Controls.Add(labelScore);
             Controls.Add(label1);
             Controls.Add(GameArea);
@@ -87,5 +108,7 @@
         private PictureBox GameArea;
         private Label label1;
         private Label labelScore;
+        private Label label2;
+        private Label gameStatus;
     }
 }
