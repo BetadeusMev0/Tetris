@@ -234,6 +234,7 @@ namespace TetrisTest
                 if (nextVector == 1 && point.X <= 0) return false;
                 if (nextVector == 2 && point.X >= 9) return false;
                 if (nextVector == 4 && point.Y >= 19) return false;
+                if (CheckFloor()) return false;
             }
 
             return true;
