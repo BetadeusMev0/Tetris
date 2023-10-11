@@ -103,12 +103,22 @@ namespace TetrisTest
 
         private void RemoveStage(int stage)
         {
-            var newPixels = pixels;
+            var newPixels = new byte[10,20];
             for (int i = stage; i > 0; i--)
                 for (int j = 0; j < 10; j++)
                 {
                     if (i+1 < 19 && i-1 > 0)newPixels[j,i] = pixels[j, i-1];
                 }
+            for (int i = stage + 1; i < 20; i++) 
+            {
+                for (int j = 0; j < 10; j++) 
+                {
+                    newPixels[j, i] = pixels[j, i];
+                }
+            }
+
+
+
             pixels = newPixels;
             labelScore.Text = (int.Parse(labelScore.Text) + 100).ToString();
         }
