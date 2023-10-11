@@ -104,11 +104,12 @@ namespace TetrisTest
         private void RemoveStage(int stage)
         {
             var newPixels = new byte[10,20];
-            for (int i = stage; i > 0; i--)
-                for (int j = 0; j < 10; j++)
+            for (int i = 0; i < 20; i++)
+                for (int j = 0; j < 10; j++) 
                 {
-                    if (i+1 < 19 && i-1 > 0)newPixels[j,i] = pixels[j, i-1];
+                    if (i - 1 > 0) newPixels[j, i] = pixels[j, i - 1];
                 }
+
             for (int i = stage + 1; i < 20; i++) 
             {
                 for (int j = 0; j < 10; j++) 
